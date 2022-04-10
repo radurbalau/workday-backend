@@ -8,16 +8,18 @@ router.get("/", (req, res) => {
 });
 
 router.post("/register",(req,res)=>{
-
     console.log(req.body);
     databaseService.registerUsers(req.body)
     res.sendStatus(200)
 })
 
-router.get("/login",(req,res)=>{
+router.get("/login",async (req, res) => {
     console.log(req.body);
-    databaseService.loginUsers(req.body)
-    res.sendStatus(200)
+    let a = await databaseService.loginUsers(req.body)
+    if (a === "Ok")
+        res.sendStatus(200)
+    else
+        res.status(401).send(({text:"password does not match"}))
 })
 
 //TODO: encryot passwords and search by email

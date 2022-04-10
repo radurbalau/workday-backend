@@ -1,19 +1,43 @@
-const createUnixSocketPool = async () => {
-  const dbSocketPath = 5432 || "/cloudsql";
+const {Knex} = require("knex");
+var bcrypt = require('bcrypt');
 
-  // Establish a connection to the database
-  return Knex({
-    client: "pg",
-    connection: {
-      user: "postgres", // e.g. 'my-user'
-      password: "test", // e.g. 'my-user-password'
-      database: "postgres", // e.g. 'my-database'
-      host: `/cloudsql/nomad-301513:europe-west3:test`,
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
+//TODO: ENCRYPTION
+const password = 'pass123';
+var hashedPassword;
+
+// Encryption of the string password
+bcrypt.genSalt(10, function (err, Salt) {
+
+    // The bcrypt is used for encrypting password.
+    bcrypt.hash(password, Salt, function (err, hash) {
+
+        if (err) {
+            return console.log('Cannot encrypt');
+        }
+
+        hashedPassword = hash;
+        console.log(hash);
+
+        bcrypt.compare(password, hashedPassword,
+            async function (err, isMatch) {
+
+                // Comparing the original password to
+                // encrypted password
+                if (isMatch) {
+                    console.log('Encrypted password is: ', password);
+                    console.log('Decrypted password is: ', hashedPassword);
+                }
+
+                if (!isMatch) {
+
+                    // If password doesn't match the following
+                    // message will be sent
+                    console.log(hashedPassword + ' is not encryption of '
+                        + password);
+                }
+            })
+    })
+})
 
 const knex = require("knex")({
   client: "pg",
@@ -38,9 +62,47 @@ const knex = require("knex")({
 //     console.log(err);
 //   });
 
+async function create_table() {
+  knex
+      .raw("CREATE TABLE users_data(" +
+          "email varchar(255),\n" +
+          "password varchar(255)\n" +
+          "); ")
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+}
+
+async function drop_table(name){
+    knex
+        .raw(`DROP TABLE users_data`)
+        .then((data) => {
+            console.log(data);
+            console.log("OK")
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+
+// async function test1() {
+//   knex
+//       .raw("INSERT INTO users_data(\"firstname\",\"lastname\") VALUES ("Radu","Durbalau");")
+//       .then((data) => {
+//         console.log(data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+// }
+
 async function test() {
   knex
-    .raw("SELECT * FROM test")
+    .raw("SELECT * FROM users_data")
     .then((data) => {
       console.log(data.rows);
     })
@@ -49,4 +111,12 @@ async function test() {
     });
 }
 
-test();
+
+
+
+
+// console.log(exports.cryptPassword("asdfggfdsa12"))
+
+// drop_table("users_data")
+//create_table();
+// test()

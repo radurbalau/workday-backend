@@ -19,7 +19,7 @@ const loginUsers = (userData) =>{
     console.log("in-login")
     return knex.raw(`SELECT email,password FROM users_data WHERE email=\'${userData.email}\';`)
         .then(async (data) => {
-            console.log("OK")
+            console.log("OdsaK")
             console.log(data.rows)
             let isEQ = await bcrypt.compare(userData.password,data.rows[0].password)
             if(isEQ){

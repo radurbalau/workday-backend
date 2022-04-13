@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DataExportManager">
@@ -42,6 +42,9 @@
       <filter id="35397a2a-29a3-4d28-99c1-3f7dcc85e085" name="radurbalau@yahoo.com" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="email" operator="=" value="radurbalau@yahoo.com" active="true" />
       </filter>
+    </filter-actions>
+    <filter-actions connection-id="85257a91-c1ca-490f-9c08-c9d0fc46590b" dataset="public.test" active-filter-id="8abc66b7-2018-451b-9967-f59efa4d0371">
+      <filter id="8abc66b7-2018-451b-9967-f59efa4d0371" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND" />
     </filter-actions>
   </component>
   <component name="DBNavigator.Project.EditorStateManager">

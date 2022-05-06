@@ -22,8 +22,8 @@ const loginAdmin = (adminData) =>{
 
 const getAllNotApprovedPtos = async () => {
     const a = await knex.raw(`SELECT user_pto_dates_id, pto_date_taken, pto_reason, pto_comment, admin_approved, user_id
-\tFROM public.users_ptos_dates_data WHERE admin_approved=FALSE;`).catch( (err)=> {console.log(err)})
-    return new ResponseModel("All Non approved ptos", a.rows,true)
+\tFROM public.users_ptos_dates_data WHERE admin_approved is NULL;`).catch( (err)=> {console.log(err)})
+    return new ResponseModel("Got all users", a.rows,true)
 }
 
 const approvePtoRequestByAdmin = async (ptoDay) =>{
@@ -31,7 +31,24 @@ const approvePtoRequestByAdmin = async (ptoDay) =>{
     \tSET admin_approved=TRUE
     \tWHERE user_pto_dates_id = ${ptoDay.user_pto_dates_id} ;`).catch( err=>{ console.log(err)})
 
-    return new ResponseModel("All Non approved ptos", {},true)
+    return new ResponseModel("Approved Pto", {},true)
+}
+
+const denyPtoRequestByAdmin = async (ptoDay) =>{
+    const a =  await knex.raw(`UPDATE public.users_ptos_dates_data
+    \tSET admin_approved=FALSE
+    \tWHERE user_pto_dates_id = ${ptoDay.user_pto_dates_id} ;`).catch( err=>{ console.log(err)})
+
+    return new ResponseModel("Denied PTo day", {},true)
+}
+
+const getAllUsers = async ()=>{
+    const a = await knex.raw(`SELECT user_id, email
+\tFROM public.users_data;`).catch((err)=>{
+        console.log(err.message)
+    })
+
+    return new ResponseModel("Denied PTo day", a.rows,true)
 }
 
 const dropOnePtoDay = async (userData) =>{
@@ -61,4 +78,5 @@ exports.loginAdmin = loginAdmin;
 exports.getAllNotApprovedPtos = getAllNotApprovedPtos;
 exports.approvePtoRequestByAdmin = approvePtoRequestByAdmin;
 exports.dropOnePtoDay =dropOnePtoDay;
-
+exports.denyPtoRequestByAdmin = denyPtoRequestByAdmin
+exports.getAllUsers = getAllUsers

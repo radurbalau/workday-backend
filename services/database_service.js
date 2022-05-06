@@ -1,7 +1,6 @@
 const knex =  require('./google_cloud_connection/knex_service')
 const bcrypt = require("bcrypt")
 const ResponseModel = require("../models/UserAuthModel")
-const {message} = require("../models/UserAuthModel");
 
 const registerUsers = async (userData) => {
     console.log("in-register")
@@ -64,20 +63,21 @@ const setupPtoEntryOneUser = async (userData) =>{
     return new ResponseModel("User registered and PTO table filled",{},true)
 }
 
-
+const getPtoRequestsForUser = async (user)=>{
+    const a = await  knex.raw(`SELECT user_pto_dates_id, pto_date_taken, pto_reason, pto_comment, admin_approved, user_id
+\tFROM public.users_ptos_dates_data WHERE user_id = ${user.id};`).catch(err=>{console.log(err)})
+    return new ResponseModel("got all users's pto requests", a.rows,true);
+}
 
 const requestOnePtoDayOnSpecificDate = async (userDarta,dateTaken) =>{
     const a = await knex.raw(`INSERT INTO users_ptos_dates_data(
 	pto_date_taken, pto_reason, pto_comment, admin_approved, user_id)
-	VALUES (TO_DATE(\'${dateTaken.pto_date_taken}\', 'DD/MM/YYYY'), \'${dateTaken.pto_reason}\', \'${dateTaken.pto_comment}\' , FALSE, ${userDarta.id});`).catch((err)=>{
+	VALUES (TO_DATE(\'${dateTaken.pto_date_taken}\', 'DD/MM/YYYY'), \'${dateTaken.pto_reason}\', \'${dateTaken.pto_comment}\' , NULL, ${userDarta.id});`).catch((err)=>{
         console.log(err)
     })
     
-    return new ResponseModel("User requested a PTo", {},true)
+    return new ResponseModel("User requested a PTO.", {},true)
 }
-
-
-
 
 
 const getPtoDaysRemaining = async (userData) => {
@@ -94,4 +94,4 @@ exports.userExists = userExists
 exports.setupPtoEntryOneUser = setupPtoEntryOneUser
 exports.getPtoDaysRemaining = getPtoDaysRemaining
 exports.requestOnePtoDayOnSpecificDate = requestOnePtoDayOnSpecificDate
-
+exports.getPtoRequestsForUser = getPtoRequestsForUser

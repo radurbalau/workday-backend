@@ -3,11 +3,13 @@ const router = express.Router()
 const databaseService = require("../../services/database_service")
 const jwt = require("jsonwebtoken")
 const passport = require("passport");
-require('../json_authorisation/passport_authorised')
+require('../json_authorisation/passport_unauthorised')
 const {callback} = require("pg/lib/native/query");
 require('dotenv').config();
 
-
+/*
+* test
+* */
 router.get("/", (req, res) => {
     res.send("Hello World!++");
 });
@@ -28,6 +30,7 @@ router.post("/register",async (req, res) => {
         res.send(fill_pto_table)
     }
 })
+
 /*
 * see if user is logged in
 * - JWT
@@ -48,7 +51,8 @@ router.post("/login",async (req, res) => {
         return res.send(a)
 
     const payload = {
-        email: req.body.email
+        email: req.body.email,
+        access_rights:"unprivileged"
     }
 
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "1d"},callback)
